@@ -6,9 +6,13 @@ with the GNU X clipboard it uses xsel http://www.vergenet.net/~conrad/software/x
 for getting and setting the contents of the X selection.
 
 The functions provided include :
+
 yank region to X clipboard
+
 kill region to X clipboard
+
 kill line to X clipboard
+
 paste from X clipboard
 
 Enjoy.
