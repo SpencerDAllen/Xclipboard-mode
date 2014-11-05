@@ -69,19 +69,17 @@
 ;; define mode
 (define-minor-mode xclipboard-mode
   "Integrates x clipboard with Emacs using xsel"
-  1
+  nil
   ;; The indicator for the mode line.
-  " Xclipboard"
+  :lighter " Xclipboard"
   ;; Make mode global rather than buffer local
   :global 1
-)
+  ;; keymap
+  '(([M-w] . yank-region-to-x-clipboard)
+    ([C-w] . kill-region-to-x-clipboard)
+    ([C-k] . kill-line-to-x-clipboard)
+    ([C-y] . paste-from-x-clipboard))
+  :group 'clipboard
+  )
 
-;; define key-map
-(defvar xclipboard-mode-map
-       (let ((map (make-sparse-keymap)))
-	 (define-key map "\M-w" 'yank-region-to-x-clipboard)
-	 (define-key map "\C-w" 'kill-region-to-x-clipboard)
-	 (define-key map "\C-k" 'kill-line-to-x-clipboard)
-	 (define-key map "\C-y" 'paste-from-x-clipboard)
-	 map))
-(use-local-map xclipboard-mode-map)
+(provide 'Xclipboard-mode)
