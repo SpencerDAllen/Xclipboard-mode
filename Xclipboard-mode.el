@@ -1,4 +1,4 @@
-;;; Xclipboard-mode.el --- X clipboard utilities for GNU Emacs
+;;; Xclipboard-mode.el --- X clipboard utilities for GNU Emacs;;;
 
 ;; Copyright (C) 2014  Spencer Allen
 
@@ -41,26 +41,31 @@
   (if (region-active-p)
       (progn
 	(shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
-	(deactivate-mark))))
+	(deactivate-mark)
+	(message nil))))
 
 (defun kill-region-to-x-clipboard ()
   (interactive)
   (if (region-active-p)
       (progn
 	(shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
-	(delete-region (region-beginning) (region-end)))))
+	(delete-region (region-beginning) (region-end))
+	(message nil))))
 
 (defun kill-line-to-x-clipboard ()
   (interactive)
-  (execute-kbd-macro (symbol-function 'set-eol-region))
   (if (region-active-p)
       (progn
+	(execute-kbd-macro (symbol-function 'set-eol-region))
 	(shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
-	(delete-region (region-beginning) (region-end)))))
+	(delete-region (region-beginning) (region-end))
+	(message nil))))
 
 (defun paste-from-x-clipboard ()
   (interactive)
-  (insert (shell-command-to-string "xsel -o -b")))
+  (progn
+    (insert (shell-command-to-string "xsel -o -b"))
+    (message nil)))
 
 ;; Macros
 (fset 'set-eol-region
@@ -74,12 +79,14 @@
   :lighter " Xclipboard"
   ;; Make mode global rather than buffer local
   :global 1
-  ;; keymap
-  '(([M-w] . yank-region-to-x-clipboard)
-    ([C-w] . kill-region-to-x-clipboard)
-    ([C-k] . kill-line-to-x-clipboard)
-    ([C-y] . paste-from-x-clipboard))
-  :group 'clipboard
+  ;;key-map
+  :keymap (let ((map (make-sparse-keymap)))	    
+	    (define-key map "\M-w" 'yank-region-to-x-clipboard)
+	    (define-key map "\C-w" 'kill-region-to-x-clipboard)
+	    (define-key map "\C-k" 'kill-line-to-x-clipboard)
+	    (define-key map "\C-y" 'paste-from-x-clipboard)
+	    map)
+  :group 'basics
   )
 
 (provide 'Xclipboard-mode)
